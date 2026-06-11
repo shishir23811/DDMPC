@@ -9,7 +9,7 @@ def generate_pe_input(N, dt, seed= 0):
     t = np.arange(N) * dt
 
     delta_amp = np.deg2rad(12.0)
-    freqs_steer = [0.15, 0.3, 0.45, 0.6, 0.75, 1.0]
+    freqs_steer = [0.15, 0.37, 0.63, 0.91, 1.29]
     n_freqs_steer = len(freqs_steer)
 
     delta = sum(
@@ -29,5 +29,6 @@ def generate_pe_input(N, dt, seed= 0):
         np.sin(2 * np.pi * f * t + rng.uniform(0, 2 * np.pi))
         for f in freqs_acc
     )
+    a += rng.normal(0.0, 0.05, N)
 
     return np.stack([delta, a], axis= 1)

@@ -16,7 +16,7 @@ def collect(N= 1500, dt= 0.05, seed= 0, path= 'data/open_loop.npz'):
     for k in range(N-1):
         Y[k+1] = veh.step(U[k])
 
-    is_pe(U, L= 36) #L + 2n
+    print(is_pe(U, L= 36)) #L + 2n
 
     os.makedirs(os.path.dirname(path), exist_ok= True)
     np.savez(path, U= U, Y= Y)
