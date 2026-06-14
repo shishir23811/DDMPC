@@ -28,11 +28,11 @@ def double_lane_change(t, v_long= 2.0):
         return 1.0 / (1.0 + np.exp(-x))
     
     X = v_long * t
-    Y = 1.5 * (sig(X-5) - sig(X-15) - sig(X-25) + sig(X-35))
+    Y = 1.5 * (sig(X-5) - sig(X-20) - sig(X-35) + sig(X-50))
     eps = 1e-3
 
     X2 = X + eps
-    Y2 = 1.5 * (sig(X2-5) - sig(X2-15) - sig(X2-25) + sig(X2-35))
+    Y2 = 1.5 * (sig(X2-5) - sig(X2-20) - sig(X2-35) + sig(X2-50))
     psi = np.arctan2(Y2 - Y, eps)
     
     return np.array([X, Y, psi])
