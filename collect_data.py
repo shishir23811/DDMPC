@@ -11,7 +11,7 @@ def collect(N= 1500, dt= 0.05, seed= 0, path= 'data/open_loop.npz'):
     U = generate_pe_input(N, dt, seed= seed)
     Y = np.zeros((N, 3))
 
-    Y[0] = veh.reset(X0= [0.0, 0.0, 0.0, 1.0])
+    Y[0] = veh.reset(x0= [0.0, 0.0, 0.0, 1.0])
 
     for k in range(N-1):
         Y[k+1] = veh.step(U[k])
