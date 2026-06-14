@@ -24,8 +24,8 @@ class KinematicBicycle:
 
         self.reset() #resets state
     
-    def reset(self, X0 = None):
-        self.state = np.array(X0 if X0 is not None else [0.0, 0.0, 0.0, 1.0]) # [X, Y, psi(yaw), v]
+    def reset(self, x0 = None):
+        self.state = np.array(x0 if x0 is not None else [0.0, 0.0, 0.0, 1.0]) # [X, Y, psi(yaw), v]
         return self._noisy_output()
     
     def _noisy_output(self):
@@ -51,3 +51,21 @@ class KinematicBicycle:
         self.state = np.array([X_n, Y_n, psi_n, v_n ])
 
         return self._noisy_output()
+
+class DriftingBicycle(KinematicBicycle):
+
+    def __init__(self, *args, drift_step=200, drift_factor=0.7,
+                 **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.drift_step = drift_step
+        self.drift_factor = drift_factor
+        self._k = 0
+
+    def step(self, u):
+        if self._k >= self.drift_step:
+            u = np.array([u[0] * self.drift_factor, u[1]])
+
+        self._k += 1
+
+        return super().step(u)
