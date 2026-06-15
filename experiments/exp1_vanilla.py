@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from controllers.deepc_vanilla import VanillaDeePC
 from sim.references import double_lane_change
-from controllers.closed_loop_driver import run_closed_loop
+from sim.closed_loop_driver import run_closed_loop
 
 data = np.load('data/open_loop.npz')
 
@@ -50,3 +50,13 @@ plt.savefig(
 )
 
 print(f"Mean solve time: {1000 * log['ct'].mean():.1f} ms")
+
+err = np.linalg.norm(
+    log['y'][:, :2] - log['ref'][:, :2],
+    axis=1
+)
+
+print(f"Mean tracking error: {err.mean():.4f} m")
+print(f"Total tracking error: {err.sum():.4f} m")
+print(f"Max tracking error: {err.max():.4f} m")
+print(f"RMSE tracking error: {np.sqrt(np.mean(err**2)):.4f} m")

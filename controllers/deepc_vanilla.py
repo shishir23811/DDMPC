@@ -48,12 +48,12 @@ class VanillaDeePC:
             self.Hu_p @ self.alpha == self.u_past,
             self.Hy_p @ self.alpha == self.y_past,
             self.Hu_f @ self.alpha == cp.reshape(
-                self.u_bar.T,
+                self.u_bar,
                 (self.L * self.m,),
                 order='C'
             ),
             self.Hy_f @ self.alpha == cp.reshape(
-                self.y_bar.T,
+                self.y_bar,
                 (self.L * self.p,),
                 order='C'
             ),
