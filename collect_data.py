@@ -16,10 +16,16 @@ def collect(N= 1500, dt= 0.05, seed= 0, path= 'data/open_loop.npz'):
     for k in range(N-1):
         Y[k+1] = veh.step(U[k])
 
-    print(is_pe(U, L= 36)) #L + 2n
+    U = U[:-1]
+    Y = Y[1:]
 
-    os.makedirs(os.path.dirname(path), exist_ok= True)
-    np.savez(path, U= U, Y= Y)
+    is_satis = is_pe(U, L= 36)
+    print(is_satis)
+    if(is_satis):
+        os.makedirs(os.path.dirname(path), exist_ok= True)
+        np.savez(path, U= U, Y= Y)
+    else:
+        print("Input is not persistently exciting.")
     
     return U, Y
 

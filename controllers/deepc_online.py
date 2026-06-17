@@ -45,5 +45,5 @@ class OnlineDeePC(VanillaDeePC):
         self.Hy_p = self.Hy[:self.n * self.p, :]
         self.Hy_f = self.Hy[self.n * self.p:, :]
 
-        print(np.linalg.matrix_rank(self.Hu_p), np.linalg.matrix_rank(self.Hy_p))
+        # print(np.linalg.matrix_rank(self.Hu_p), np.linalg.matrix_rank(self.Hy_p))
         self._build_problem()

@@ -2,14 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from controllers.deepc_vanilla import VanillaDeePC
-from sim.references import double_lane_change
+from sim.references import double_lane_change, circle
 from sim.closed_loop_driver import run_closed_loop
 
 data = np.load('data/open_loop.npz')
 
 ctrl = VanillaDeePC(
-    data['U'],
-    data['Y'],
+    data["U"],
+    data["Y"],
     L=24,
     n=6,
     lam=1e-3
@@ -18,7 +18,7 @@ ctrl = VanillaDeePC(
 log = run_closed_loop(
     ctrl,
     double_lane_change,
-    T=20.0
+    T=32.0, noise = False
 )
 
 plt.figure(figsize=(10, 4))
@@ -42,7 +42,7 @@ plt.legend()
 plt.xlabel('X (m)')
 plt.ylabel('Y (m)')
 
-plt.title('Day 3 -- Vanilla DeePC, Double Lane Change')
+plt.title('Day 3: Vanilla DeePC, Double Lane Change')
 
 plt.savefig(
     'results/day3_vanilla_dlc.png',

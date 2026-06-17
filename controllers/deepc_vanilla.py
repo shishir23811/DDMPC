@@ -11,6 +11,8 @@ class VanillaDeePC:
         self.L, self.n, self.lam = L, n, lam
         self.Q = np.eye(self.p) if Q is None else Q
         self.R = 1e-2 * np.eye(self.m) if R is None else R
+        self.Q_sqrt = self._psd_sqrt(self.Q)
+        self.R_sqrt = self._psd_sqrt(self.R)
 
         self.u_min = u_min if u_min is not None else np.array([-np.deg2rad(15), -2.0])
         self.u_max = u_max if u_max is not None else np.array([np.deg2rad(15), 2.0])
@@ -27,6 +29,12 @@ class VanillaDeePC:
 
         self._build_problem()
 
+    @staticmethod
+    def _psd_sqrt(M):
+        vals, vecs = np.linalg.eigh(M)
+        vals = np.clip(vals, 0.0, None)
+        return np.diag(np.sqrt(vals)) @ vecs.T
+
     def _build_problem(self):
         cols = self.Hu.shape[1]
         self.alpha = cp.Variable(cols)
@@ -41,8 +49,10 @@ class VanillaDeePC:
 
         cost = self.lam * cp.sum_squares(self.alpha)
         for k in range(self.L):
-            cost += cp.quad_form(self.y_bar[k] - self.y_ref[k], self.Q)
-            cost += cp.quad_form(self.u_bar[k], self.R)
+            cost += cp.sum_squares(
+                self.Q_sqrt @ (self.y_bar[k] - self.y_ref[k])
+            )
+            cost += cp.sum_squares(self.R_sqrt @ self.u_bar[k])
 
         cons = [
             self.Hu_p @ self.alpha == self.u_past,
@@ -71,10 +81,19 @@ class VanillaDeePC:
         self.prob.solve(solver=cp.OSQP,
                         warm_start=True,
                         verbose=False)
+    
+        # alpha = self.alpha.value
 
-        if self.prob.status not in ('optimal', 'optimal_inaccurate'):
+        # y_future_from_hankel = (self.Hy_f @ alpha)
+
+        # print("status =", self.prob.status)
+
+        if self.prob.status not in (
+            cp.OPTIMAL,
+            cp.OPTIMAL_INACCURATE
+        ):
             raise RuntimeError(
-                f"QP did not solve: {self.prob.status}"
-            )
+                f"Solver failed with status: {self.prob.status}"
+        )
 
         return self.u_bar.value[0]

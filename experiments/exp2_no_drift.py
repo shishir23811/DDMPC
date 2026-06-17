@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from controllers.deepc_vanilla import VanillaDeePC
 from controllers.deepc_online import OnlineDeePC
-from controllers.closed_loop_driver import run_closed_loop
+from sim.closed_loop_driver import run_closed_loop
 from sim.bicycle import DriftingBicycle
 from sim.references import figure_eight
 

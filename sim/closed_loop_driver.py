@@ -1,6 +1,6 @@
 import numpy as np
 import time
-from sim.bicycle import KinematicBicycle
+from sim.bicycle import KinematicBicycle, DriftingBicycle
 from sim.references import double_lane_change
 
 
@@ -48,9 +48,12 @@ def run_closed_loop(controller, ref_func, T=20.0, dt=0.05,
         u = controller(u_past, y_past, y_ref)
 
         ct = time.perf_counter() - tic
-
+        
         y = veh.step(u)
 
+        if hasattr(controller, "push_measurement"):
+            controller.push_measurement(u, y)
+       
         u_buf.append(u)
         y_buf.append(y)
 
